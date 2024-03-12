@@ -16,7 +16,7 @@ const App = () => {
     complete:false,
   });
   const [arr, setArr] = useState([])
-  
+  const [editingTodo, setEditingTodo] = useState(null); 
 // const addTodoInput =useRef(null)
   const storedArr = JSON.parse(localStorage.getItem('todos'))
   useEffect(() =>{
@@ -28,26 +28,31 @@ if(storedArr){
   useEffect(()=> {
     localStorage.setItem('todos',JSON.stringify(arr))
   }, [arr]);
-
-  return (
+const addTodoHandler =() =>{
+  setArr([...arr, todo]);
+  setTodo({id:'' , title:''});
+}
+const handleDelete =(id) =>{
+  const newArr = arr.filter((item) =>(item.id !==id))
+  setArr(newArr)
+}
+  
+  return  (
     <>
     <Header/>
-   <div className='App'>
-    <div className='box'>
-      <p>1</p>
-      <button onClick = {handleAdd} className="add">ADD</button>
-      <button className="sub">SUB</button>
-      <button className="reset">RESET</button>
-    </div>
-   </div>
+  
   <input
   className= "box1 bg-success-subtle border-0 rounded-pill "
   type= 'text'
   placeholder='Enter your todo'
-  value= {todo.title}
-  onChange={(e) => setTodo({id: Math.random(),title:e.target.value})}
-  //  onKeyDown={(e)=>}
   
+  value={editingTodo ? editingTodo.title : todo.title}
+  onChange={(e) => setTodo({id: Math.random(),title:e.target.value})}
+   onKeyDown={(event)=>{
+    if(event.key ==="Enter"){
+      addTodoHandler()
+    }
+   }}
   />
   <Button variant="success" className= "box2 rounded-pill" onClick= {() => setArr([...arr, todo])
   
@@ -56,16 +61,16 @@ if(storedArr){
   <ListGroup className='list'> 
 {arr.map((item) => (
   <ListGroupItem key={item.id} >
-  <FontAwesomeIcon icon={faEdit} className='icons ms-2 ' />
+  <FontAwesomeIcon icon={faEdit} className='icons ms-2 'onClick={() => setEditingTodo(item)} />
   
-  <FontAwesomeIcon icon={faTrash} className='icon ms-2 '  />
+  <FontAwesomeIcon icon={faTrash} className='icon ms-2 ' onClick={() => handleDelete(item.id)} />
    <input type='checkbox' checked={item.complete} onChange={()=>{
     item.complete =!item.complete
    }}/>
 {item.title}
 
   
-  </ListGroupItem>
+</ListGroupItem>
 ))}
   </ListGroup>
   
