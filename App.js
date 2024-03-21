@@ -1,33 +1,34 @@
 
 import React, { useEffect, useState } from 'react'
-import Button from 'react-bootstrap/Button';
-
 import './App.css';
-
-import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import Header from './component/Header';
 import Footer from './component/Footer';
+import Buttoncomponent from './component/Buttoncomponent';
 const App = () => {
   const [todo, setTodo] = useState({
     id:'',
     title:'',
     complete:false,
   });
-  const [arr, setArr] = useState([])
-  const [editingTodo, setEditingTodo] = useState(null); 
+  const [arr, setArr] = useState([...JSON.parse(localStorage.getItem('todos'))])
+ 
 // const addTodoInput =useRef(null)
-  const storedArr = JSON.parse(localStorage.getItem('todos'))
-  useEffect(() =>{
-if(storedArr){
-  setArr(storedArr)
-}
-},[])
+//   const storedArr = 
+//   useEffect(() =>{
+// if(storedArr){
+//   setArr(storedArr)
+// }
+// },[])
   
   useEffect(()=> {
     localStorage.setItem('todos',JSON.stringify(arr))
   }, [arr]);
+  // useEffect(()=>{
+  //  addTodoInput.current.focus()
+  // },[])
 const addTodoHandler =() =>{
   setArr([...arr, todo]);
   setTodo({id:'' , title:''});
@@ -35,6 +36,11 @@ const addTodoHandler =() =>{
 const handleDelete =(id) =>{
   const newArr = arr.filter((item) =>(item.id !==id))
   setArr(newArr)
+}
+const handleEdit =(id) =>{
+  const editing = arr.filter((item) => (item.id === id))
+  const edited = editing.map(editing => editing.title);
+  setTodo({title: edited})
 }
   
   return  (
@@ -46,7 +52,7 @@ const handleDelete =(id) =>{
   type= 'text'
   placeholder='Enter your todo'
   
-  value={editingTodo ? editingTodo.title : todo.title}
+  value={todo.title}
   onChange={(e) => setTodo({id: Math.random(),title:e.target.value})}
    onKeyDown={(event)=>{
     if(event.key ==="Enter"){
@@ -54,16 +60,13 @@ const handleDelete =(id) =>{
     }
    }}
   />
-  <Button variant="success" className= "box2 rounded-pill" onClick= {() => setArr([...arr, todo])
-  
-  }> Add todo </Button>
-  
-  <ListGroup className='list'> 
+ <Buttoncomponent addTodoHandler = {addTodoHandler}/>
+ <ListGroup className='list'> 
 {arr.map((item) => (
   <ListGroupItem key={item.id} >
-  <FontAwesomeIcon icon={faEdit} className='icons ms-2 'onClick={() => setEditingTodo(item)} />
+  <FontAwesomeIcon icon={faEdit} className='icons ms-2 'onClick={() => handleEdit(item)} />
   
-  <FontAwesomeIcon icon={faTrash} className='icon ms-2 ' onClick={() => handleDelete(item.id)} />
+  <FontAwesomeIcon icon={faTrash} className='icons ms-2 ' onClick={() => handleDelete(item.id)} />
    <input type='checkbox' checked={item.complete} onChange={()=>{
     item.complete =!item.complete
    }}/>
@@ -73,6 +76,8 @@ const handleDelete =(id) =>{
 </ListGroupItem>
 ))}
   </ListGroup>
+  
+
   
   <Footer/>
    </>
