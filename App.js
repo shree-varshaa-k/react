@@ -1,8 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import './App.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import Iconcomponent from './component/Iconcomponent';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import Header from './component/Header';
 import Footer from './component/Footer';
@@ -45,6 +44,7 @@ const handleEdit =(id) =>{
   
   return  (
     <>
+    
     <Header/>
   
   <input
@@ -64,9 +64,7 @@ const handleEdit =(id) =>{
  <ListGroup className='list'> 
 {arr.map((item) => (
   <ListGroupItem key={item.id} >
-  <FontAwesomeIcon icon={faEdit} className='icons ms-2 'onClick={() => handleEdit(item)} />
-  
-  <FontAwesomeIcon icon={faTrash} className='icons ms-2 ' onClick={() => handleDelete(item.id)} />
+  <Iconcomponent item={item} handleDelete={handleDelete} handleEdit={handleEdit}/>
    <input type='checkbox' checked={item.complete} onChange={()=>{
     item.complete =!item.complete
    }}/>
@@ -80,7 +78,9 @@ const handleEdit =(id) =>{
 
   
   <Footer/>
+  
    </>
     )
 }
+
 export default App;
