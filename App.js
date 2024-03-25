@@ -1,11 +1,31 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import ReactDOM from "react-dom";
 import Iconcomponent from './component/Iconcomponent';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 import Header from './component/Header';
 import Footer from './component/Footer';
 import Buttoncomponent from './component/Buttoncomponent';
+import  {Login}  from './pages/Login';
+import { About } from './pages/About';
+
+const todoReducer = (state, action) => {
+  if (action.type === 'ADD') {
+    return [...state, action.payload];
+  } else if (action.type === 'COMPLETE') {
+    return state.map((todo) => {
+      if (todo.id === action.payload) {
+        return { ...todo, complete: !todo.complete };
+      } else {
+        return todo;
+      }
+    });
+  }
+};
+const[todos,dispatch ]=useReducer(todoReducer,[])
+
 const App = () => {
   const [todo, setTodo] = useState({
     id:'',
@@ -30,7 +50,7 @@ const App = () => {
   // },[])
 const addTodoHandler =() =>{
   setArr([...arr, todo]);
-  setTodo({id:'' , title:''});
+  setTodo({id:'' , title:'',complete: false});
 }
 const handleDelete =(id) =>{
   const newArr = arr.filter((item) =>(item.id !==id))
@@ -43,6 +63,7 @@ const handleEdit =(id) =>{
 }
   
   return  (
+
     <>
     
     <Header/>
@@ -78,8 +99,14 @@ const handleEdit =(id) =>{
 
   
   <Footer/>
-  
+  <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<About />}/>
+      <Route path='/login' element={<Login/>}/>
+    </Routes>
+    </BrowserRouter>
    </>
+
     )
 }
 
